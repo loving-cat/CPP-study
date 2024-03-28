@@ -10,7 +10,7 @@ namespace bit
 	{
 	public:
 		typedef T* iterator;
-
+		typedef const T* const_itertor;
 		vector()
 		{
 
@@ -23,6 +23,55 @@ namespace bit
 			{
 				push_back(e);
 			}
+		}
+		//类模板的成员函数可以是函数模板
+		template<class InputIterator>
+		vector(InputIterator first, InputIterator last)//相当于begin 传给了first,end传给了last
+		{
+			while (first != last)
+			{
+				push_back(*first);
+				++first;
+			}
+		}
+		//区间遍历写成模板就可以各种类型使用
+		//vector<int> v2(v1.begin(), v1.end());
+		//vector<int> v3(str.begin(),str.end());
+
+
+		//       unsigned int      signed int  会导致 vector<int> v1(10,1);初始化出现问题
+		vector(size_t n, const T& val = T())//用0初始化的话，一些string类型的无法初始化
+		{
+			reserve(n);
+			for (size_t i = 0; i < n; i++)
+			{
+				push_back(val);
+			}
+		}
+
+		void swap(vector<T>& v)
+		{
+			std::swap(_start, v._start);
+			std::swap(_finish, v._finish);
+			std::swap(_endofstorage, v._endofstorage);
+		}
+		//v1=v3
+		vector<T>& operator=(vector<T> v)
+		{
+			swap(v);
+			return *this;
+		}
+		
+		//C++ 11
+		//vector<int> v1 = {1,2,3,4,5,6,7,8,9,10};
+		vector(initializer_list<T> il)//底层是迭代器，可以使用范围for
+		{
+			reserve(il.size());
+			for (auto& e : il)
+			{
+				std::cout << e << " ";
+			}
+			std::cout << std::endl;
 		}
 		~vector()
 		{
@@ -37,11 +86,11 @@ namespace bit
 		{
 			return _finish;
 		}
-		const_iterator start() const
+		const_itertor start() const
 		{
 			return _start;
 		}
-		const_iterator end() const
+		const_itertor end() const
 		{
 			return _finish;
 		}
@@ -60,18 +109,12 @@ namespace bit
 		{
 			return _finish - _start;
 		}
-		size_t size()
-		{
-			return _finish - _start;
-		}
+
 		size_t capacity() const
 		{
 			return _endofstorage - _start;
 		}
-		size_t capacity()
-		{
-			return _endofstorage - _start;
-		}
+
 		void reserve(size_t n)//扩容
 		{
 			if (n > capacity())
@@ -83,7 +126,7 @@ namespace bit
 
 				_start = tmp;
 				_finish = tmp + old_size;
-				_endofstorage = tmp + newCapacity;
+				_endofstorage = tmp + n;
 			}
 		}
 		void resize(size_t n, const T& val = T())//T()无参匿名对象
@@ -143,15 +186,17 @@ namespace bit
 		{
 			if (_finish == _endofstorage)
 			{
-				size_t old_size = size();
-				size_t newCapacity = capacity() == 0 ? 4 : capacity() * 2;//扩容
-				T* tmp = new T[newCapacity];//拷贝新空间
-				memcpy(tmp, _start, size() * sizeof(T));
-				delete[] _start;//释放旧空间
+				reserve(capacity() == 0 ? 4 : capacity() * 2);
+				//size_t old_size = size();
+				//size_t newCapacity = capacity() == 0 ? 4 : capacity() * 2;//扩容
 
-				_start = tmp;
-				_finish = tmp + old_size;
-				_endofstorage = tmp + newCapacity;
+				//T* tmp = new T[newCapacity];//拷贝新空间
+				//memcpy(tmp, _start, size() * sizeof(T));
+				//delete[] _start;//释放旧空间
+
+				//_start = tmp;
+				//_finish = tmp + old_size;
+				//_endofstorage = tmp + newCapacity;
 			}
 
 			*_finish = val;//插入数据
@@ -160,9 +205,9 @@ namespace bit
 
 		void pop_back()
 		{
-			assert(!empty);
-			--_finish;
-
+			/*assert(!empty);
+			--_finish;*/
+			erase(--end());
 
 		}
 		bool empty()
@@ -219,4 +264,31 @@ void test_vector7()
 	v2.push_back(4.4);
 	v2.push_back(5.5);
 	print_vector(v2);
+}
+void test_vector8()
+{
+	auto x = { 1,2,3,4,5,6,7,8,9,10 };
+	cout << typeid(x).name() << endl;
+	std::vector<int> v1 = { 1,2,3,4,5,6,7,8,9,10 };
+	for (auto e : v1)
+	{
+		std::cout << e << " ";
+	}
+	std::cout << std::endl;
+
+	initializer_list<int> y = { 1,2,3,4,5,6,7 };
+
+	//单参数的构造函数，隐式类型转换
+	string str = "11111";//构造+拷贝构造-> 优化 直接构造
+	const string& str1 = "11111";//构造临时对象，引用的是临时对象
+	vector<string> v;
+	v.push_back(str);
+}
+
+void Test_vector9()
+{
+	int i = 1;
+	//C++ 11
+	int j = { 1 };
+	int k{ 1 };
 }
