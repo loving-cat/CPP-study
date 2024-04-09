@@ -6,6 +6,7 @@ namespace bit
 {
 	//vector<T>::iterator
 	//list<T>::iterator
+
 	template<class Iterator, class Ref,class Ptr >
 	class ReverseIterator
 	{
@@ -17,19 +18,23 @@ namespace bit
 		Ref operator*()
 		{
 			Iterator tmp = _it;
-			return *(--tmp);
+			return *(--tmp);//访问前一个位置
 		}
 		Ptr operator->()
 		{
+			//return _it.operator->();
 			return &(operator*());
 		}
 		Self& operator++()
 		{
-			return --_it;
+			 --_it;
+			 return *this;
 		}
 		Self& operator--()
 		{
-			return ++_it;
+			++_it;
+			return *this;
+
 		}
 		bool operator!=(const Self& s)
 		{
