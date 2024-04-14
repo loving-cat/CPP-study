@@ -217,6 +217,7 @@ using namespace std;
 //}
 
 ////静态成员 ---继承
+// 静态成员可以调用，只有使用权
 //class Person
 //{
 //public:
@@ -278,7 +279,7 @@ using namespace std;
 // {
 //		return A();
 // }
-//	//①把构造函数or析构函数私有，则不能继承
+//	//①把构造函数or析构函数私有，则不能继承 C++98
 //private:
 //	A()
 //	{}
@@ -294,6 +295,21 @@ using namespace std;
 //{
 //	return 0;
 //}
+//
+//C++11 final最终类
+//class A final
+//{
+//public:
+//	A()
+//	{}
+//private:
+//	int _a;
+//	int _b;
+//};
+//class B : public A
+//{
+//
+//};
 
 ////复杂的菱形继承及菱形虚拟继承
 ////多继承可能会导致菱形继承
@@ -328,3 +344,57 @@ using namespace std;
 //	a.Teacher::_name = "yyy";
 //	cout << a.Student::_name << endl;
 //}
+
+
+
+////////////////////////////////////////////////////////////////
+//继承----权限更大
+class A
+{
+public:
+	void func()
+	{}
+protected:
+	int _a;
+};
+class B : public A
+{
+public:
+	void f()
+	{
+		func();
+		_a++;
+	}
+protected:
+	int _b;
+};
+//组合----权限较小  耦合度低
+class C
+{
+public:
+	void func()
+	{}
+protected:
+	int c;
+};
+class D
+{
+public:
+	void func()
+	{
+		_c.func();
+		//_c.c++;
+	}
+
+protected:
+	C _c;
+	int d;
+};
+
+//继承和组合都能服用
+int main()
+{
+	cout<< sizeof(D) <<endl;
+	cout << sizeof(B) << endl;
+	return 0;
+}
