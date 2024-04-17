@@ -66,48 +66,67 @@ using namespace std;
 //}
 
 //抽象类
-class Car
-{
-public:
+//class Car
+//{
+//public:
 	//纯虚函数
 	//1.间接强制去派生类去重写
 	//2.抽象类-不能实例化对象，必须重写
-virtual void Drive() = 0;
-};
-class Benz :public Car
+//virtual void Drive() = 0;
+//};
+//class Benz :public Car
+//{
+//public:
+//	virtual void Drive()
+//	{
+//		cout << "Benz-舒适" << endl;
+//	}
+//};
+//class BMW :public Car
+//{
+//public:
+//	virtual void Drive()
+//	{
+//		cout << "BMW-操控" << endl;
+//	}
+//};
+//void func(Car& ptr)
+//{
+//	ptr.Drive();
+//}
+//void Test()
+//{
+//	Car* pBenz = new Benz;
+//	pBenz->Drive();
+//	Car* pBMW = new BMW;
+//	pBMW->Drive();
+//}
+//int main()
+//{
+//	Benz b;
+//	BMW C;
+//	Test();
+//	func(b);
+//	func(C);
+//	return 0;
+//}
+
+//打印虚表
+typedef void (*VFUNC)();
+//void PrintVFT(VFUNC a[])
+void PrintVFT(VFUNC * a)
 {
-public:
-	virtual void Drive()
+	//linux下的话要写死，因为linux里面没有00 00 00 00，有多少个写多少个
+	for (size_t i = 0; a[i] != 0; ++i)
 	{
-		cout << "Benz-舒适" << endl;
+		printf("[%d]:%p\n", i, a[i]);
 	}
-};
-class BMW :public Car
-{
-public:
-	virtual void Drive()
-	{
-		cout << "BMW-操控" << endl;
-	}
-};
-void func(Car& ptr)
-{
-	ptr.Drive();
-}
-void Test()
-{
-	Car* pBenz = new Benz;
-	pBenz->Drive();
-	Car* pBMW = new BMW;
-	pBMW->Drive();
+	printf("\n");
 }
 int main()
 {
-	Benz b;
-	BMW C;
-	Test();
-	func(b);
-	func(C);
+	void(*f1)();
+	VFUNC f2;
+	
 	return 0;
 }
-
